@@ -34,12 +34,12 @@ type IANA struct {
 // NewIANA creates a new IANA from an IAID, T1 and T2 durations, and an
 // Options map.  If an Options map is not specified, a new one will be
 // allocated.
-func NewIANA(iaid [4]byte, t1 time.Duration, t2 time.Duration, options Options) *IANA {
+func NewIANA(iaid [4]byte, t1 time.Duration, t2 time.Duration, options Options) IANA {
 	if options == nil {
 		options = make(Options)
 	}
 
-	return &IANA{
+	return IANA{
 		IAID:    iaid,
 		T1:      t1,
 		T2:      t2,
@@ -48,7 +48,7 @@ func NewIANA(iaid [4]byte, t1 time.Duration, t2 time.Duration, options Options) 
 }
 
 // MarshalBinary allocates a byte slice containing the data from a IANA.
-func (i *IANA) MarshalBinary() ([]byte, error) {
+func (i IANA) MarshalBinary() ([]byte, error) {
 	// 4 bytes: IAID
 	// 4 bytes: T1
 	// 4 bytes: T2

@@ -4,6 +4,8 @@ import (
 	"net"
 	"reflect"
 	"testing"
+
+	"github.com/u-root/dhcp6"
 )
 
 const (
@@ -25,36 +27,25 @@ func TestSolicitAndAdvertise(t *testing.T) {
 	if err != nil {
 		t.Fatalf("%v", err)
 	}
-	t.Logf("Got a reply: %v", reply)
 	if reply == nil {
 		t.Fatalf("The reply is nil?")
 	}
 
-	if reply.MessageType != MessageTypeAdvertise {
-		t.Fatalf("Reply does not have a correct typeShould be MessageTypeAdvertise but %v instead\n", MessageType(reply.MessageType))
+	if reply.MessageType != dhcp6.MessageTypeAdvertise {
+		t.Fatalf("Reply does not have a correct typeShould be MessageTypeAdvertise but %s instead\n", reply.MessageType)
 	}
-	t.Logf("It is a MessageTypeAdvertise")
 	if !reflect.DeepEqual(reply.TransactionID, [3]byte{0x00, 0x01, 0x02}) {
 		t.Fatalf("Reply txID does not match")
 	}
-	t.Logf("txID matches")
-	iana, containsIANA, err := reply.Options.IANA()
-	if !containsIANA {
-		t.Fatalf("Reply does not contain IANA")
-	}
-	t.Logf("It contains an IANA")
+
+	iana, err := reply.Options.IANA()
 	if err != nil {
-		t.Fatalf("Reply does not contain valid IANA")
+		t.Fatalf("Reply does not contain valid IANA: %v", err)
 	}
 
-	t.Logf("The IANA is valid")
-	iaaddr, containsIAAddr, err := iana[0].Options.IAAddr()
-	if !containsIAAddr {
-		t.Fatalf("Reply does not contain IAAddr")
-	}
-	t.Logf("It contains an IAAddr")
+	iaaddr, err := iana[0].Options.IAAddr()
 	if err != nil {
-		t.Fatalf("Reply does not contain valid IAAddr")
+		t.Fatalf("Reply does not contain valid IAAddr: %v", err)
 	}
 	t.Logf("Get assigned ipv6 addr from server: %+v", iaaddr[0])
 }

@@ -69,20 +69,14 @@ func (c *Client) Solicit() ([]*dhcp6.IAAddr, *dhcp6.Packet, error) {
 		}
 	}
 
-	iana, containsIANA, err := packet.Options.IANA()
+	iana, err := packet.Options.IANA()
 	if err != nil {
 		return nil, packet, fmt.Errorf("error: reply does not contain valid IANA: %v", err)
 	}
-	if !containsIANA {
-		return nil, packet, fmt.Errorf("error: reply does not contain IANA")
-	}
 
-	iaAddrs, containsIAAddr, err := iana[0].Options.IAAddr()
+	iaAddrs, err := iana[0].Options.IAAddr()
 	if err != nil {
 		return nil, packet, fmt.Errorf("error: reply does not contain valid IAAddr: %v", err)
-	}
-	if !containsIAAddr {
-		return nil, packet, fmt.Errorf("error: reply does not contain IAAddr")
 	}
 
 	return iaAddrs, packet, nil

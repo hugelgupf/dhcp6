@@ -5,8 +5,8 @@ package dhcp6_test
 import (
 	"testing"
 
-	"github.com/mdlayher/dhcp6"
-	"github.com/mdlayher/dhcp6/dhcp6test"
+	"github.com/u-root/dhcp6"
+	"github.com/u-root/dhcp6/dhcp6test"
 )
 
 // TestServeMuxHandleNoResponse verifies that no Handler is invoked when a
